@@ -14,7 +14,7 @@ class GitLFSResponseTest extends AnyFunSuite {
           size = 1,
           authenticated = true,
           actions = Actions(
-            upload = Some(Href("https://example.com")),
+            upload = Some(Href("https://example.com", Map.empty)),
             download = None
           ),
           expiresAt = Instant.ofEpochMilli(20000)
@@ -23,6 +23,6 @@ class GitLFSResponseTest extends AnyFunSuite {
       hashAlgo = "sha256"
     )
     response.toJson.noSpaces shouldBe
-      """{"transfer":"basic","objects":[{"oid":"hoge","size":1,"authenticated":true,"actions":{"upload":{"href":"https://example.com"},"download":null},"expires_at":"1970-01-01T00:00:20Z"}],"hash_algo":"sha256"}""".stripMargin.stripMargin
+      """{"transfer":"basic","objects":[{"oid":"hoge","size":1,"authenticated":true,"actions":{"upload":{"href":"https://example.com","header":{}}},"expires_at":"1970-01-01T00:00:20Z"}],"hash_algo":"sha256"}""".stripMargin.stripMargin
   }
 }
