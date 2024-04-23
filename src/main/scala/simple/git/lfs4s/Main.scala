@@ -8,7 +8,7 @@ import io.circe.syntax._
 import org.http4s.circe.CirceEntityCodec._
 import org.http4s.circe._
 import org.http4s.ember.client.EmberClientBuilder
-import org.http4s.{Method, Uri}
+import org.http4s.{Method, Uri, Status}
 
 object Main extends IOApp {
 
@@ -35,7 +35,12 @@ object Main extends IOApp {
       )
       .withEntity(response.asJson)
     EmberClientBuilder.default[IO].build.use { client =>
-      client.expect[Unit](request)
+      client.fetch(request) {
+        case Status.Successful(r) => IO.unit
+        case r => r.as[String].flatMap(b => IO.raiseError(
+          new Exception(s"Lambda response failed with status ${r.status.code} and body $b"))
+        )
+      }
     }
   }
 
